@@ -28,8 +28,9 @@ FTP.prototype.initialize = function (options) {
 		username: '',
 		password: '',
 		escape: true,
+		timeout: false
 	};
-	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape');
+	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'timeout');
 	if (!opts.host) throw new Error('You need to set a host.');
 	if (!opts.username) throw new Error('You need to set an username.');
 	if (!opts.password) throw new Error('You need to set a password.');
@@ -38,6 +39,7 @@ FTP.prototype.initialize = function (options) {
   	if (opts.port)
     		opts.host = opts.host + ':' + opts.port;
 	this.options = opts;
+	if (opts.timeout) this.timeout = opts.timeout;
 };
 
 FTP.prototype.escapeshell = function(cmd) {
@@ -48,7 +50,6 @@ FTP.prototype._escapeshell = function(cmd) {
 		return this.escapeshell(cmd);
 	return cmd;
 };
-
 
 FTP.prototype.exec = function (cmds, callback) {
 	if (typeof cmds === 'string')
@@ -62,8 +63,12 @@ FTP.prototype.exec = function (cmds, callback) {
 	var cmd = '';
 	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";';
 	cmd += this.cmds.join(';');
+	if (this.timeout) {
+		timeCmds = ['sleep ' + this.timeout, 'bye', 'exit'];
+		cmd += (';' + timeCmds.join(';'));
+	}
 	this.cmds = [];
-
+	console.log(cmd);
 	var lftp = spawn('lftp', ['-c', cmd]);
 	var data = "";
 	var error = "";
