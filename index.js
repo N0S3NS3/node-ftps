@@ -46,8 +46,12 @@ FTP.prototype.escapeshell = function(cmd) {
 	return cmd.replace(/(["\s'$`\\])/g,'\\$1');
 };
 FTP.prototype._escapeshell = function(cmd) {
-	if (this.options.escape)
+	if (this.options === undefined) {
+		console.log('here');
+	}
+	if (this.options.escape !== undefined) {
 		return this.escapeshell(cmd);
+	}
 	return cmd;
 };
 
@@ -68,7 +72,6 @@ FTP.prototype.exec = function (cmds, callback) {
 		cmd += (';' + timeCmds.join(';'));
 	}
 	this.cmds = [];
-	console.log(cmd);
 	var lftp = spawn('lftp', ['-c', cmd]);
 	var data = "";
 	var error = "";
