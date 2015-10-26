@@ -65,7 +65,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";';
 	cmd += this.cmds.join(';');
 	if (this.timeout) {
-		timeCmds = ['sleep ' + this.timeout, 'bye', 'exit'];
+		timeCmds = ['bye', 'exit'];
 		cmd += (';' + timeCmds.join(';'));
 	}
 	this.cmds = [];
