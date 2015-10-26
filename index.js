@@ -46,10 +46,7 @@ FTP.prototype.escapeshell = function(cmd) {
 	return cmd.replace(/(["\s'$`\\])/g,'\\$1');
 };
 FTP.prototype._escapeshell = function(cmd) {
-	if (this.options === undefined) {
-		console.log('here');
-	}
-	if (this.options.escape !== undefined) {
+	if (this.options !== undefined && this.options.escape !== undefined) {
 		return this.escapeshell(cmd);
 	}
 	return cmd;
@@ -125,7 +122,10 @@ FTP.prototype.mv = function (from, to) {
 	return this.raw('mv ' + this._escapeshell(from) + ' ' + this._escapeshell(to));
 };
 FTP.prototype.move = FTP.prototype.mv;
-FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(this._escapeshell).join(' ')); };
+FTP.prototype.rm = function () {
+	console.log(arguments);
+ return this.raw('rm ' + Array.prototype.slice.call(arguments).map(this._escapeshell).join(' '));
+};
 FTP.prototype.remove = FTP.prototype.rm;
 FTP.prototype.rmdir = function () { return this.raw('rmdir ' + Array.prototype.slice.call(arguments).map(this._escapeshell).join(' ')); };
 
